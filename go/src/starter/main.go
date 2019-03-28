@@ -26,13 +26,9 @@ var (
 )
 
 func init() {
-	flag.StringVar(&logDir, "log-dir", path.Join(GetHomeDir(), ".conky/log"), "set folder for log")
+	flag.StringVar(&logDir, "log-dir", "", "set folder for log")
 	flag.StringVar(&conkyPath, "conky", "/usr/bin/conky", "set conky")
 	flag.Parse()
-}
-
-func main() {
-	run()
 }
 
 func GetHomeDir() string {
@@ -90,12 +86,14 @@ func handler(buffer bytes.Buffer, filePath string, fileName string) {
 		log.Fatalf("error write tempory file  %v", err)
 	}
 
+	if logDir != "" {
 	logFile, err := os.OpenFile(path.Join(logDir, fileName+".log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error create log file %v", err)
 	}
+	}
 
-	cmd := exec.Command("bash", "-c", "cd "+rootDir+" && "+ conkyPath+ " -c "+temp.Name()+"&> "+logFile.Name())
+	cmd := exec.Command("bash", "-c", "cd "+rootDir+" && "+conkyPath+" -c "+temp.Name()+"&> "+logFile.Name())
 	err = cmd.Run()
 	if err != nil {
 		log.Fatalf("error run conky %v", err)
@@ -105,7 +103,16 @@ func handler(buffer bytes.Buffer, filePath string, fileName string) {
 	return
 }
 
+func main() {
+	run()
+}
+
 func setLog() {
+
+	if logDir == "" {
+		log.SetFlags(0)
+		log.SetOutput(ioutil.Discard)
+	}
 
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
 		err := os.MkdirAll(logDir, os.ModePerm)
@@ -118,5 +125,6 @@ func setLog() {
 	if err != nil {
 		log.Fatalf("error open log file: %v", err)
 	}
+
 	log.SetOutput(f)
 }
