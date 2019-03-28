@@ -86,14 +86,19 @@ func handler(buffer bytes.Buffer, filePath string, fileName string) {
 		log.Fatalf("error write tempory file  %v", err)
 	}
 
+	var cmd *exec.Cmd
+
 	if logDir != "" {
-	logFile, err := os.OpenFile(path.Join(logDir, fileName+".log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error create log file %v", err)
-	}
+
+		cmd = exec.Command("bash", "-c", "cd "+rootDir+" && "+conkyPath+" -c "+temp.Name()+"&")
+	} else {
+		logFile, err := os.OpenFile(path.Join(logDir, fileName+".log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("error create log file %v", err)
+		}
+		cmd = exec.Command("bash", "-c", "cd "+rootDir+" && "+conkyPath+" -c "+temp.Name()+"&> "+logFile.Name())
 	}
 
-	cmd := exec.Command("bash", "-c", "cd "+rootDir+" && "+conkyPath+" -c "+temp.Name()+"&> "+logFile.Name())
 	err = cmd.Run()
 	if err != nil {
 		log.Fatalf("error run conky %v", err)
