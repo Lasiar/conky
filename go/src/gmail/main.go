@@ -98,7 +98,7 @@ func main() {
 		return
 	}
 
-	messages, err := srv.Users.Messages.List(user).Q("is:unread").Do()
+	messages, err := srv.Users.Messages.List(user).LabelIds("INBOX").Q("is:unread").Do()
 	if err != nil {
 		log.Fatalf("get messages: %v", err)
 	}
