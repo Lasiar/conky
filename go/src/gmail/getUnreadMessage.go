@@ -28,6 +28,5 @@ func GetClient(configAuth *oauth2.Config) *gmail.Service {
 	if err != nil {
 		log.Fatalf("new client gmail: %v", err)
 	}
-
 	return srv
 }

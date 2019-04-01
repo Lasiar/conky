@@ -27,23 +27,24 @@ function InstallBinary() {
     for module in ${golangModule[@]}
     do
         go build -o  ${conkyBinary}/${module##*/}  ${module}
-        echo ${module} compile
+        echo ${conkyBinary}/${module##*/}  compile
     done
 }
 
 function AddGmailConfigurations() {
     echo "Please go to \"https://developers.google.com/gmail/api/quickstart/go\" click on  button \"ENABLE THE GMAIL API\""
     echo "and save download client configuration"
-    echo "enter path gmail client configuration"
+    echo "enter full path gmail client configuration"
     read pathGmailConf
+    cp ${pathGmailConf} ${gmailConfig}/credentials.json
 
-    mv ${pathGmailConf} ${gmailConfig}
+    ${conkyBinary}/gmail -first
 }
 
 function main() {
     CheckAndCreateDir
-    AddGmailConfigurations
     InstallBinary
+    AddGmailConfigurations
 }
 
 main
