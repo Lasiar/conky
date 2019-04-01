@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -13,7 +12,7 @@ import (
 
 var layaot = "2006-01-02 15:04:05"
 
-func main1() {
+func main() {
 	apiWeather := openWeatherMap.New(config.GetConfig().ApiKey, config.GetConfig().CityID, "2.5")
 	apiWeather.Debug = false
 	wg := sync.WaitGroup{}
@@ -55,7 +54,7 @@ func main1() {
 	}{}
 
 	for i := range days {
-		days[i].time = time.Now().UTC().Truncate(24 * time.Hour).AddDate(0, 0, i+1)
+		days[i].time = time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, i+1)
 
 		days[i].high = -50
 		days[i].low = 50

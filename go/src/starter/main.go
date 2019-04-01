@@ -2,13 +2,13 @@ package main
 
 import (
 	"bytes"
+	"conky/go/src/util"
 	"flag"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"os/user"
 	"path"
 	"sync"
 )
@@ -20,7 +20,7 @@ const (
 var (
 	configFiles = [6]string{"sys", "info", "battery", "data_storage", "network", "weather"}
 	wg          = sync.WaitGroup{}
-	rootDir     = path.Join(GetHomeDir(), ".conky")
+	rootDir     = path.Join(util.GetHomeDir(), ".conky")
 	logDir      string
 	conkyPath   string
 )
@@ -29,14 +29,6 @@ func init() {
 	flag.StringVar(&logDir, "log-dir", "", "set folder for log")
 	flag.StringVar(&conkyPath, "conky", "/usr/bin/conky", "set conky")
 	flag.Parse()
-}
-
-func GetHomeDir() string {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatalf("cant find user dir %v", err)
-	}
-	return usr.HomeDir
 }
 
 func run() {
