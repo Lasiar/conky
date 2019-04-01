@@ -2,20 +2,26 @@
 runDir=$(pwd)
 conkyRoot=${HOME}/.conky
 conkyBinary=${conkyRoot}/binary
-conkyConfig=${HOME}/.config/conky
-gmailConfig=${conkyConfig}/gmail
+conkyConfigs=${conkyRoot}/configs
+conkyOtherConfigs=${HOME}/.config/conky
+gmailConfig=${conkyOtherConfigs}/gmail
+
 
 function CheckAndCreateDir() {
     if [[ ! -d ${conkyBinary} ]]; then
         mkdir ${conkyBinary}
     fi 
     
-    if [[ ! -d ${conkyConfig} ]]; then
-        mkdir ${conkyConfig}
+    if [[ ! -d ${conkyOtherConfigs} ]]; then
+        mkdir ${conkyOtherConfigs}
     fi
 
     if [[ ! -d ${gmailConfig} ]]; then
         mkdir ${gmailConfig}
+    fi
+
+    if [[ ! -d ${conkyConfigs} ]]; then
+        mkdir ${conkyConfigs}
     fi
 }
 
@@ -31,6 +37,10 @@ function InstallBinary() {
     done
 }
 
+function CopyConfigs() {
+    cp -r ./configs/ ${conkyConfigs}
+}
+
 function AddGmailConfigurations() {
     echo "Please go to \"https://developers.google.com/gmail/api/quickstart/go\" click on  button \"ENABLE THE GMAIL API\""
     echo "and save download client configuration"
@@ -43,6 +53,7 @@ function AddGmailConfigurations() {
 
 function main() {
     CheckAndCreateDir
+    CopyConfigs
     InstallBinary
     AddGmailConfigurations
 }
